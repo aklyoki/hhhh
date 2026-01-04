@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>借阅排行 - 图书馆管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/reader_center">📚 图书馆管理系统</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/reader_center">个人中心</a>
+                <a class="nav-link active" href="/rank">借阅排行</a>
+                <a class="nav-link" href="/api/reader/logout">退出登录</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header text-center fs-5">🔥 热门图书借阅排行TOP10</div>
+                    <div class="card-body" id="bookRank"></div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header text-center fs-5">🌟 读者借阅排行TOP10</div>
+                    <div class="card-body" id="readerRank"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 获取图书排行
+        fetch("/api/stat/book_rank")
+            .then(res=>res.json())
+            .then(data=>{
+                let html = "<ol>";
+                data.data.forEach(item=>html+=`<li>${item.book_name} - ${item.author} (${item.borrow_count}次)</li>`);
+                html += "</ol>";
+                document.getElementById("bookRank").innerHTML = data.data.length>0 ? html : "<p class='text-center'>暂无借阅数据</p>";
+            })
+        // 获取读者排行
+        fetch("/api/stat/reader_rank")
+            .then(res=>res.json())
+            .then(data=>{
+                let html = "<ol>";
+                data.data.forEach(item=>html+=`<li>${item.real_name} (${item.borrow_count}次)</li>`);
+                html += "</ol>";
+                document.getElementById("readerRank").innerHTML = data.data.length>0 ? html : "<p class='text-center'>暂无借阅数据</p>";
+            })
+    </script>
+</body>
+</html>

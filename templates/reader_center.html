@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心 - 图书馆管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/reader_center">📚 读者个人中心</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/book_search">图书查询</a>
+                <a class="nav-link" href="/rank">借阅排行</a>
+                <a class="nav-link" href="/api/reader/logout">退出登录</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <div class="alert alert-success">
+            <h5>👋 欢迎你，{{ session.real_name }}！</h5>
+            <p>读者编号：{{ session.reader_no }} | 账号：{{ session.username }}</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">🔧 个人信息修改</div>
+                    <div class="card-body">
+                        <form id="updateForm">
+                            <div class="mb-3">
+                                <label>手机号</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="请输入手机号">
+                            </div>
+                            <div class="mb-3">
+                                <label>邮箱</label>
+                                <input type="email" name="email" class="form-control" placeholder="请输入邮箱">
+                            </div>
+                            <div class="mb-3">
+                                <label>联系地址</label>
+                                <input type="text" name="address" class="form-control" placeholder="请输入地址">
+                            </div>
+                            <div class="mb-3">
+                                <label>新密码（选填）</label>
+                                <input type="password" name="new_pwd" class="form-control" placeholder="不修改则留空">
+                            </div>
+                            <button type="button" onclick="updateInfo()" class="btn btn-primary w-100">保存修改</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">📖 功能入口</div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 mb-3">
+                                <a href="/book_warehousing" class="btn btn-success w-100">图书入库</a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/book_search" class="btn btn-info w-100">图书查询</a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/rank" class="btn btn-warning w-100">借阅排行</a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="#" class="btn btn-danger w-100">我的罚款</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateInfo() {
+            let formData = new FormData(document.getElementById("updateForm"));
+            fetch("/api/reader/update", {method:"POST", body:formData})
+                .then(res=>res.json())
+                .then(data=>alert(data.msg))
+        }
+    </script>
+</body>
+</html>
